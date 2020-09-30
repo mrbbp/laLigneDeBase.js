@@ -1,23 +1,28 @@
 /**
- * premier test lib de dessin d'une ligneDeBase sur le fond
- * ou le premier plan
+ * dessin d'une ligneDeBase sur le fond ou le premier plan
  *
  * v.1 - 200601
  * mis en code par mrbbp.com
  *
  * 1  : version initiale
+ * 1.1: 200930
+        - ajout de la gestion des écrans retina (dessin en double taille)
+        - ajout d'une propriété debug
+        - ajout d'une `margin` `String` en rem ou `Number (px)
+        - ajout d'une propriété ùnder`: positionnement sous l'élément désigner
+        - la propriété `level`devient obsolète (utilisée en interne)
+        - le canvas positionné en 'absolute' et non 'fixed''
  *
- *  ligneDeBase.show(pattern,margin,level,style);
+ *  ligneDeBase.show(pattern,margin,style);
  *
- * pex: ligneDeBase.show(5,20,"up","dotted");
+ * pex: ligneDeBase.show(5,20,"dotted");
  *
  *
  * ou passage d'un objet contenant un ou plusieurs paramètres
  * ('color': couleur du dessin, paramètrable uniquement de cette façon)
  *
- *  p.ex.: const ldb = ligneDeBase.show({'pattern': 5,'style':'dotted', 'level':"down"});
-
- * si margin n'est pas définit, elle sera 2 fois la gouttiere (2*gap)
+ *  p.ex.: const ldb = ligneDeBase.show({'pattern': 5,'style':'dotted', 'under':"yourElementHTML"});
+ *
  *  margin: accepte String "8rem" (en rem) ou Chiffre (px)
  */
 (function(root){ 
@@ -26,11 +31,11 @@
     'pattern': 5
     ,'size': 0
     ,'margin': 0
-    ,'style' : 'dotted' // dashed dotted
-    ,'level': "up"
-    ,'color': 'rgba(0,176,228,.33)'
+    ,'style' : 'solid' // dashed dotted solid
+    ,'level': 'up'
+    ,'color': 'rgba(0,176,228,.66)'
     ,'colorM': 'rgba(255, 100, 217,.66)'
-    ,'debug':null
+    ,'debug': null
   };
 
   function ligneDeBase(){
@@ -90,13 +95,12 @@
 
     function dLdB() {
      // ajoute les styles pour avoir une hauteur de body
-      document.querySelector("html").style.height = "100%";
-      document.body.style.height = "100%";
+      document.querySelector("html").style.minHeight = "100vh";
+      document.body.style.minHeight = "100vh";
 
       let c;
       root.largeur = document.body.clientWidth;
       root.hauteur = document.body.clientHeight;
-
 
      // si #ligneDeBase (canvas) existe, il le sélectionne, sinon l'ajoute au DOM
       if (document.querySelector("#ligneDeBase")) {
@@ -104,21 +108,35 @@
       } else {
         c = document.createElement("canvas");
         c.setAttribute("id", "ligneDeBase");
-        c.setAttribute("style", "position: fixed; top:0; left:0;");
-        document.body.insertBefore(c, document.body.firstChild);
-        // en fonction de settings.level, place devant ou derrère
-        if (settings.level == "down") {
-          c.style.zIndex = -100;
-
+        c.setAttribute("style", "position: absolute; top:0; left:0;");
+        // postionnement du canvas dans le DOM
+        if (settings.under) {
+          const repere = document.querySelector(settings.under);
+          document.body.insertBefore(c, repere);
+          repere.style.position = "relative";
         } else {
-          c.style.zIndex = 100;
-          //document.body.insertBefore(c, document.body.lastChild);
+          document.body.appendChild(c);
         }
       }
       // taille du canvas
       c.width = largeur;
       c.height = hauteur;
+
+      //sur écran retina
+      if (window.devicePixelRatio){
+        console.log(window.devicePixelRatio)
+        // 1. Ensure the elment size stays the same.
+        c.style.width  = c.width + "px";
+        c.style.height = c.height + "px";
+        // 2. Increase the canvas dimensions by the pixel ratio.
+        c.width  *= window.devicePixelRatio;
+        c.height *= window.devicePixelRatio;
+      }
       const ctx = c.getContext('2d');
+      if (window.devicePixelRatio){
+        // 3. Scale the context by the pixel ratio.
+        ctx.scale(window.devicePixelRatio,window.devicePixelRatio);
+      }
       ctx.lineWidth = .5;
       // efface le canvas
       ctx.clearRect(0, 0, largeur, hauteur);
