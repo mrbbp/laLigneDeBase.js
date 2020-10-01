@@ -168,11 +168,9 @@
       }
    }
    // gestion du resize avec délai
-    window.addEventListener('resize', function(e) {
+    window.addEventListener('resize', (e) => {
       clearTimeout(window.resizeTimer);
-      window.resizeTimer = setTimeout(function() {
-        dLdB();
-      }, 250);
+      window.resizeTimer = setTimeout(() => dLdB(), 250);
     });
 
     return _ligneDeBaseObject;
