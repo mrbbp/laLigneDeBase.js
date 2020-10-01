@@ -124,7 +124,7 @@
 
       //sur écran retina
       if (window.devicePixelRatio){
-        console.log(window.devicePixelRatio)
+        console.log(window.devicePixelRatio);
         // 1. Ensure the elment size stays the same.
         c.style.width  = c.width + "px";
         c.style.height = c.height + "px";
