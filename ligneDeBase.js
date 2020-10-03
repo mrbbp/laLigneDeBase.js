@@ -1,5 +1,5 @@
 /**
- * dessin d'une ligneDeBase sur le fond ou le premier plan
+ * dessin d'une laLigneDeBase sur le fond ou le premier plan
  *
  * v.1 - 200601
  * mis en code par mrbbp.com
@@ -12,20 +12,23 @@
         - ajout d'une propriété ùnder`: positionnement sous l'élément désigner
         - la propriété `level`devient obsolète (utilisée en interne)
         - le canvas positionné en 'absolute' et non 'fixed''
+ * 1.2: 201003
+        - changement de nom liegneDeBase() devient laLigneDeBase()
+        - changement de nom de la méthode show() -> draw()
  *
- *  ligneDeBase.show(pattern,margin,style);
+ *  laLigneDeBase.draw(pattern,margin,style);
  *
- * pex: ligneDeBase.show(5,20,"dotted");
+ * pex: laLigneDeBase.draw(5,20,"dotted");
  *
  *
  * ou passage d'un objet contenant un ou plusieurs paramètres
  * ('color': couleur du dessin, paramètrable uniquement de cette façon)
  *
- *  p.ex.: const ldb = ligneDeBase.show({'pattern': 5,'style':'dotted', 'under':"yourElementHTML"});
+ *  p.ex.: const ldb = laLigneDeBase.draw({'pattern': 5,'style':'dotted', 'under':"yourElementHTML"});
  *
  *  margin: accepte String "8rem" (en rem) ou Chiffre (px)
  */
-(function(root){ 
+(function(root){
   'use strict';
   const settings = {
     'pattern': 5
@@ -38,12 +41,12 @@
     ,'debug': null
   };
 
-  function ligneDeBase(){
+  function laLigneDeBase(){
     const _ligneDeBaseObject = {};
     // initialise le timer du resize
     window.resizeTimer;
 
-    _ligneDeBaseObject.show = function(pa=5, ma=0, le="up", st="solid"){
+    _ligneDeBaseObject.draw = function(pa=5, ma=0, le="up", st="solid"){
        //console.log(m);
 
       // si c'est un objet (correctement formaté) il remplit les valeurs
@@ -102,12 +105,12 @@
       root.largeur = document.body.clientWidth;
       root.hauteur = document.body.clientHeight;
 
-     // si #ligneDeBase (canvas) existe, il le sélectionne, sinon l'ajoute au DOM
-      if (document.querySelector("#ligneDeBase")) {
-        c = document.querySelector("#ligneDeBase");
+     // si #laLigneDeBase (canvas) existe, il le sélectionne, sinon l'ajoute au DOM
+      if (document.querySelector("#laLigneDeBase")) {
+        c = document.querySelector("#laLigneDeBase");
       } else {
         c = document.createElement("canvas");
-        c.setAttribute("id", "ligneDeBase");
+        c.setAttribute("id", "laLigneDeBase");
         c.setAttribute("style", "position: absolute; top:0; left:0;");
         // postionnement du canvas dans le DOM
         if (settings.under) {
@@ -176,8 +179,8 @@
     return _ligneDeBaseObject;
   }
   // We need that our library is globally accesible, then we save in the window
-  if(typeof(window.ligneDeBase) === 'undefined'){
-    window.ligneDeBase = ligneDeBase();
-  }
+  if(typeof(window.laLigneDeBase) === 'undefined'){
+    window.laLigneDeBase = laLigneDeBase();
+  }
 
 })(window); // We send the window variable withing our function
